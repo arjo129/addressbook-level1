@@ -60,7 +60,8 @@
   find Dickson
   # find multiple with some keywords
   find Charlie Betsy
-
+  # find case insensitive
+  find_ci charlie
 ##########################################################
 # test delete person command
 ##########################################################
