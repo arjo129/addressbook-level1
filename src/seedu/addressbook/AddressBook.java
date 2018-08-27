@@ -137,7 +137,7 @@ public class AddressBook {
     private static final String COMMAND_FIND_CI_DESC = "Finds all persons whose names contain any of the specified "
             + "keywords and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_CI_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
-    private static final String COMMAND_FIND_CI_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
+    private static final String COMMAND_FIND_CI_EXAMPLE = COMMAND_FIND_CI_WORD + " alice bob charlie";
 
     private static final String DIVIDER = "===================================================";
 
@@ -1140,8 +1140,16 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForFindCICommand() + LS
                 + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
+                + getUsageInfoForHelpCommand() + LS
+                ;
+    }
+
+    private static String getUsageInfoForFindCICommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_CI_WORD, COMMAND_FIND_CI_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_CI_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_CI_EXAMPLE) + LS;
     }
 
     /** Returns the string for showing 'add' command usage instruction */
