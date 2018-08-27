@@ -133,6 +133,12 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
+    private static final String COMMAND_FIND_CI_WORD = "find_ci";
+    private static final String COMMAND_FIND_CI_DESC = "Finds all persons whose names contain any of the specified "
+            + "keywords and displays them as a list with index numbers.";
+    private static final String COMMAND_FIND_CI_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
+    private static final String COMMAND_FIND_CI_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
+
     private static final String DIVIDER = "===================================================";
 
 
@@ -381,6 +387,8 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        case COMMAND_FIND_CI_WORD:
+            return executeFindCIPersons(commandArgs);
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -388,6 +396,17 @@ public class AddressBook {
         }
     }
 
+    /**
+     * Converts a list of words into lowercase
+     * @param keywords : to lower case.
+     */
+    private static Set<String> toLowercaseSet(Collection<String> keywords){
+        Set<String> lowerCasedKeywords = new HashSet<>();
+        for(String key: keywords){
+            lowerCasedKeywords.add(key.toLowerCase());
+        }
+        return lowerCasedKeywords;
+    }
     /**
      * Splits raw user input into command word and command arguments string
      *
@@ -457,6 +476,21 @@ public class AddressBook {
     }
 
     /**
+     * Finds and lists all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is case insensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeFindCIPersons(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeywordCI(keywords);
+        showToUser(personsFound);
+        return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+
+    /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -487,6 +521,25 @@ public class AddressBook {
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
+                matchedPersons.add(person);
+            }
+        }
+        return matchedPersons;
+    }
+
+    /**
+     * Retrieves all persons in the full model whose names contain some of the specified keywords.
+     * This version of the function is case insensitive. It takes keywords and maps
+     *
+     * @param keywords for searching
+     * @return list of persons in full model with name containing some of the keywords
+     */
+    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeywordCI(Collection<String> keywords) {
+        Collection<String> lowerKeywords = toLowercaseSet(keywords);
+        final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        for (String[] person : getAllPersonsInAddressBook()) {
+            final Set<String> wordsInName = toLowercaseSet(new HashSet<>(splitByWhitespace(getNameFromPerson(person))));
+            if (!Collections.disjoint(wordsInName, lowerKeywords)) {
                 matchedPersons.add(person);
             }
         }
